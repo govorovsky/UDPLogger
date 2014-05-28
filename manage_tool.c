@@ -31,6 +31,10 @@ enum {
     runner_port = 9999 
 };
 
+enum {
+    LOGGING, WAITING
+};
+
 void write_to_sysfs(const char * path,const char * buf) {
     int fd = open(path, O_WRONLY);
     write(fd, buf, strlen(buf));
@@ -81,7 +85,7 @@ int main(int argc, char**argv)
         return 0; /* exit parent process */
     }
 
-    setup_leds(0);
+    setup_leds(WAITING);
 
     char run_str[100];
     int sockfd,n;
@@ -117,7 +121,7 @@ int main(int argc, char**argv)
       if(strcmp(mesg,START_CMD) == 0) {
          printf("Starting....\n");
          system(run_str);
-         setup_leds(1);
+         setup_leds(LOGGING);
       }
 
       if(strcmp(mesg,STOP_CMD) == 0) {
@@ -127,7 +131,7 @@ int main(int argc, char**argv)
          if(pid > 0) {
             kill(pid,2);
          }
-         setup_leds(0);
+         setup_leds(WAITING);
       }
 
       if(strcmp(mesg,SHUTDOWN_CMD) == 0) {
