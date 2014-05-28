@@ -11,6 +11,7 @@
 
 #include "logger.h"
 
+
 void dispLog(Log* log,unsigned char *buf){
  /* just displays the Log struct */
     struct in_addr *t;

@@ -22,6 +22,10 @@ const char * heartbleed_led_trigger = "/sys/devices/leds.7/leds/beaglebone:green
 const char * heartbleed_led_delayon = "/sys/devices/leds.7/leds/beaglebone:green:heartbeat/delay_on";
 const char * heartbleed_led_delayoff = "/sys/devices/leds.7/leds/beaglebone:green:heartbeat/delay_off";
 
+enum {
+    logger_port = 9090,
+    runner_port = 9999 
+};
 
 void write_to_sysfs(const char * path,const char * buf) {
     int fd = open(path, O_WRONLY);
@@ -41,17 +45,6 @@ void setup_leds(int isWaiting) {
     write_to_sysfs(heartbleed_led_trigger,  state);
     write_to_sysfs(heartbleed_led_delayon,  delay);
     write_to_sysfs(heartbleed_led_delayoff, delay);
-}
-
-
-enum {
-    logger_port = 9090,
-    runner_port = 9999 
-};
-
-
-void blink(char * device, int freq) {
-
 }
 
 int read_pid(const char * fname) {
