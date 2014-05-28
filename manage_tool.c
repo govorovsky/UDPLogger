@@ -7,10 +7,9 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <string.h>
+#include <stdlib.h>
 
 #define BUF_SIZE 1500
-
-#define USR0 "dsdsds"
 
 #define START_CMD "START"
 #define STOP_CMD "STOP"
