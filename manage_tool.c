@@ -17,9 +17,12 @@
 
 const char * logger_pidfile = "/tmp/logger.pid";
 const char * manager_pidfile = "/tmp/manager.pid";
-const char * log_dir = "logs";
+const char * log_dir = "/var/udp_logs";
 
 const char * heartbleed_led_trigger = "/sys/devices/leds.7/leds/beaglebone:green:heartbeat/trigger";
+const char * mmc_led_trigger = "/sys/devices/leds.7/leds/beaglebone:green:mmc0/trigger";
+const char * usr2_led_trigger = "/sys/devices/leds.7/leds/beaglebone:green:usr2/trigger";
+const char * usr3_led_trigger = "/sys/devices/leds.7/leds/beaglebone:green:usr3/trigger";
 const char * heartbleed_led_delayon = "/sys/devices/leds.7/leds/beaglebone:green:heartbeat/delay_on";
 const char * heartbleed_led_delayoff = "/sys/devices/leds.7/leds/beaglebone:green:heartbeat/delay_off";
 
@@ -36,13 +39,16 @@ void write_to_sysfs(const char * path,const char * buf) {
 
 void setup_leds(int isWaiting) {
     int fd;
-    char * state = "none";
+    char * state = "timer";
     char * delay;
     if(isWaiting) {
         delay = "1000";
     } else {
         delay = "100";
     }
+    write_to_sysfs(mmc_led_trigger,   "none");
+    write_to_sysfs(usr2_led_trigger,  "none");
+    write_to_sysfs(usr3_led_trigger,  "none");
     write_to_sysfs(heartbleed_led_trigger,  state);
     write_to_sysfs(heartbleed_led_delayon,  delay);
     write_to_sysfs(heartbleed_led_delayoff, delay);
@@ -100,7 +106,7 @@ int main(int argc, char**argv)
        return 1;
     }
 
-    sprintf(run_str, "./logger %d %s",logger_port, log_dir);
+    sprintf(run_str, "logger %d %s",logger_port, log_dir);
 
 
     while (1)
