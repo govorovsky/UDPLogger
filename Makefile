@@ -1,4 +1,4 @@
-PREFIX=/usr/local
+PREFIX=/usr
 BINDIR= $(PREFIX)/bin
 LIBS = 
 PROGRAM1 = logger
@@ -32,7 +32,7 @@ manager.o: manage_tool.c
 uninstall:
 	cd $(BINDIR) && if [ -f "./$(PROGRAM1)" ];then rm $(PROGRAM1);fi
 install:
-	cp -f $(PROGRAM1) $(BINDIR)
+	cp -f $(PROGRAM4) $(BINDIR)
 clean:
 	rm -rf *.o $(PROGRAM1) $(PROGRAM2) $(PROGRAM3) $(PROGRAM4)
 	

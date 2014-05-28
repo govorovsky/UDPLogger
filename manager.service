@@ -1,0 +1,10 @@
+[Unit]
+Description=Manager tool for control UDP Logger daemon
+
+[Service]
+Type=forking
+PIDFile=/tmp/manager.pid
+ExecStart=/usr/bin/manage_tool
+
+[Install]
+WantedBy=multi-user.target
