@@ -48,7 +48,7 @@ void readLog(const char* filename){
              exit(1);
         }
         fread(buf,log.pSize,1,f);
-        dispLog(&log,buf);
+    //    dispLog(&log,buf);
         printf("\n");
         memcpy(&cnum,buf,4);/* fill uint32_t with packet number */
         if((cnum-num)!=1) {

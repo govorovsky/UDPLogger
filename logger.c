@@ -2,12 +2,14 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <time.h>
+#include <sys/time.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/ip.h> /* superset of previous */
 #include <strings.h>
 #include <string.h>
 #include <arpa/inet.h>
+#include <sys/signal.h>
 #include <signal.h>
 
 #include "logger.h"
@@ -87,7 +89,7 @@ int getLogNumber(const char * file_num) {
 }
 
 void initNum(const char * filename,int val) {
-/* create file and write val to it */
+/* create file and write value to it */
     if(access(filename,F_OK)!=-1) {
         return;
     } else { 
@@ -128,6 +130,9 @@ int main(int argc, char** argv) {
         exit(1);
     }
     else if(pid!=0){
+        FILE * pid_file = fopen(logger_pidfile,"w+");
+        fprintf(pid_file,"%d",pid); 
+        fclose(pid_file);
         return 0; /* exit parent process */
     }
 
@@ -179,7 +184,7 @@ int main(int argc, char** argv) {
     iov.iov_len          = sizeof(recv_data);
 
     int log_number = getLogNumber(file_num);
-    sprintf(fname,"log_%07d.dat",log_number);
+    sprintf(fname,"%s/log_%07d.dat", log_dir, log_number);
     checkLogFile(fname,log_number);
     FILE *log_file = fopen(fname,"wb");
 
@@ -233,13 +238,18 @@ int main(int argc, char** argv) {
       fillLog(&in_log,&rTime,&client_addr,bytes_read);
       writeLog(log_file,&in_log,recv_data);  
       memcpy(&curr,recv_data,4);
-        if(curr!=num) printf("corrupted at=%d\n",num);
+        if(curr!=num)  { /* для отладки потери пакетов */
+            printf("corrupted at=%d\n",num);
+            //exit(1);
+            num = curr; // ок учли потерю и не теряем счетчик
+        }
       num++;
       }
       fflush(log_file);  
     }
 
     fclose(log_file);
+    remove(logger_pidfile);
 
     return 0;
 }
